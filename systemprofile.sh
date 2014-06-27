@@ -5,7 +5,7 @@ source "./functions.sh"
 
 PROCLOOP=100         # Number of procloops to launch
 MEMLOOP=100          # Number of fillmems to launch
-BOOKEND=20          # Iterations of data to collect before and after each stress test
+BOOKEND=10          # Iterations of data to collect before and after each stress test
 
 LOGDIR="${HOME}/systemprofile"
 LOGFILE="$LOGDIR/System.Profile.log"
@@ -52,7 +52,7 @@ echo "DONE"
 
 ### Gather system information #################################################
 echo -n 'Gathering system information... '
-echo "-- System Information -------------------------------------" > "$LOGFILE"
+echo "-- System Information -------------------------------------" >> "$LOGFILE"
 echo "Hostname:            $(uname -n)" >> "$LOGFILE"
 echo "Machine:             $(uname -m)" >> "$LOGFILE"
 echo "Platform:            $(uname -i)" >> "$LOGFILE"
@@ -68,7 +68,7 @@ echo 'DONE'
 
 ### Gather release information ################################################
 echo -n 'Gathering release information... '
-echo "-- Release Information ------------------------------------" > "$LOGFILE"
+echo "-- Release Information ------------------------------------" >> "$LOGFILE"
 cat /etc/*release* | \
     sed -e "s/=/:#/g" -e "s/\"//g" | \
     awk 'BEGIN{FS="#"} { printf("%-20s %s\n", $1, $2) }' >> "$LOGFILE"
@@ -77,7 +77,7 @@ echo 'DONE'
 
 ### Gather processor information ##############################################
 echo -n 'Gathering processor information... '
-echo "-- Processor Information ----------------------------------" > "$LOGFILE"
+echo "-- Processor Information ----------------------------------" >> "$LOGFILE"
 echo "CPU Vendor:          $(grep '^vendor_id' "$CPUINFO" | head -n 1 | sed -e "s/^vendor_id[ \t]*: //g")" >> "$LOGFILE"
 echo "CPU Model:           $(grep '^model name' "$CPUINFO" | head -n 1 | sed -e "s/^model name[ \t]*: //g")" >> "$LOGFILE"
 echo "CPU Cores:           $(grep '^cpu cores' "$CPUINFO" | head -n 1 | sed -e "s/^cpu cores[ \t]*: //g")" >> "$LOGFILE"
@@ -90,7 +90,7 @@ echo 'DONE'
 
 ### Gather temprature information #############################################
 echo -n "Gathering temprature information... "
-echo "-- Temprature Data ----------------------------------------" > "$LOGFILE"
+echo "-- Temprature Data ----------------------------------------" >> "$LOGFILE"
 for i in $(seq 1 3); do
     if [ -f "/sys/class/thermal/thermal_zone$i/temp" ]; then
         echo "Temp$1:              $(cat "/sys/class/thermal/thermal_zone$i/temp")" >> "$LOGFILE"
@@ -101,7 +101,7 @@ echo "DONE"
 
 ### Gather memory information #################################################
 echo -n 'Gathering memory information... '
-echo "-- Memory Information -------------------------------------" > "$LOGFILE"
+echo "-- Memory Information -------------------------------------" >> "$LOGFILE"
 echo "MEM Total(KB):       $(grep '^MemTotal:' /proc/meminfo | awk '{ print $2}')" >> "$LOGFILE"
 echo "MEM Free(KB):        $(grep '^MemFree:' /proc/meminfo | awk '{ print $2}')" >> "$LOGFILE"
 echo "MEM Cached(KB):      $(grep '^Cached:' /proc/meminfo | awk '{ print $2}')" >> "$LOGFILE"
@@ -112,21 +112,21 @@ echo 'DONE'
 
 ### Gather Drive Information ##################################################
 echo -n 'Gathering drive information... '
-echo "-- Drive Information --------------------------------------" > "$LOGFILE"
+echo "-- Drive Information --------------------------------------" >> "$LOGFILE"
 df -lh --sync >> "$LOGFILE"
 echo "" >> "$LOGFILE"
 echo "DONE"
 
 ### Gather network information ################################################
 echo -n 'Gathering network information... '
-echo "-- Network Information ------------------------------------" > "$LOGFILE"
+echo "-- Network Information ------------------------------------" >> "$LOGFILE"
 ifconfig -a | sed -e "/[ \t]*UP/d" -e "/[ \t]*[RT]X/d" -e "/[ \t]*collisions/d" >> "$LOGFILE"
 echo "" >> "$LOGFILE"
 echo 'DONE'
 
 ### Gather kernel module information ##########################################
 echo -n "Gathering kernel module information... "
-echo "-- Active Kernel Modules ------------------------------------" > "$LOGFILE"
+echo "-- Active Kernel Modules ------------------------------------" >> "$LOGFILE"
 cat /proc/modules | \
     sed -e "s/Live 0x[a-zA-Z0-9 ()]*//g" \
     -e "s/ [0-9]* [0-9]*/ : /g" \
@@ -135,7 +135,7 @@ echo "" >> "$LOGFILE"
 echo "DONE"
 
 ### Begin Stress Tests ########################################################
-echo "-- Stress Test Results ------------------------------------" > "$LOGFILE"
+echo "-- Stress Test Results ------------------------------------" >> "$LOGFILE"
 # Stress Processor
 echo -n 'Stressing processor...'
 launch_stress_test "$TOOLS/procloop" $PROCLOOP "$PROCDATA" "$BOOKEND"
