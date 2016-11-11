@@ -3,6 +3,8 @@
 Generate a profile for a linux system.
 The goal is to be able to compare system profiles in a meaningful way.
 
+This project has been moved to : https://bitbucket.org/matthewlinton/linprofile
+
 ## Install
 
 * Checkout: `git clone https://github.com/matthewlinton/linprofile.git`
